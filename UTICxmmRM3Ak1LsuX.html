@@ -1,0 +1,153 @@
+<html><head><base href="." /><style>
+body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  cursor: pointer;
+}
+
+.eye {
+  width: 200px;
+  height: 100px;
+  position: relative;
+  transition: transform 0.3s, opacity 0.5s;
+}
+
+.eye:hover {
+  transform: scale(1.1);
+}
+
+.matrix-text {
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  position: absolute;
+  font-size: 14px;
+  white-space: pre;
+  opacity: 0;
+  animation: fall 1s linear forwards;
+  text-shadow: 0 0 8px #fff;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.5;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(1000px);
+    opacity: 0;
+  }
+}
+</style></head><body>
+
+<svg class="eye" viewBox="0 0 200 100">
+  <!-- Sclera (white of eye) -->
+  <ellipse cx="100" cy="50" rx="90" ry="45" fill="#fff"/>
+  
+  <!-- Iris -->
+  <circle cx="100" cy="50" r="30" fill="#436">
+    <animate attributeName="r" values="30;28;30" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Pupil -->
+  <circle cx="100" cy="50" r="15" fill="#000">
+    <animate attributeName="r" values="15;13;15" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Light reflection -->
+  <circle cx="85" cy="40" r="8" fill="#fff" opacity="0.8"/>
+  <circle cx="110" cy="45" r="4" fill="#fff" opacity="0.5"/>
+  
+  <!-- Upper eyelid -->
+  <path d="M10,50 Q100,-20 190,50" fill="none" stroke="#000" stroke-width="2">
+    <animate attributeName="d" 
+             values="M10,50 Q100,-20 190,50;M10,50 Q100,0 190,50;M10,50 Q100,-20 190,50" 
+             dur="4s" 
+             repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Lower eyelid -->
+  <path d="M10,50 Q100,120 190,50" fill="none" stroke="#000" stroke-width="2">
+    <animate attributeName="d" 
+             values="M10,50 Q100,120 190,50;M10,50 Q100,100 190,50;M10,50 Q100,120 190,50" 
+             dur="4s" 
+             repeatCount="indefinite"/>
+  </path>
+</svg>
+
+<script>
+let isActive = false;
+const eye = document.querySelector('.eye');
+
+document.body.addEventListener('click', function(e) {
+  if (!isActive) {
+    isActive = true;
+    eye.style.opacity = '0';
+    setTimeout(() => eye.style.display = 'none', 500);
+    startMatrix();
+  }
+});
+
+function startMatrix() {
+  function createText() {
+    const text = document.createElement('div');
+    text.className = 'matrix-text';
+    
+    // Create typing effect
+    let fullText = 'CELYNCJW';
+    let currentText = '';
+    let index = 0;
+    
+    text.style.left = Math.random() * window.innerWidth + 'px';
+    text.style.top = '0px';
+    document.body.appendChild(text);
+    
+    const typeInterval = setInterval(() => {
+      if (index < fullText.length) {
+        currentText += fullText[index];
+        text.textContent = currentText;
+        index++;
+      } else {
+        clearInterval(typeInterval);
+      }
+    }, 25); // Faster typing speed
+    
+    // Remove the element after animation completes
+    setTimeout(() => {
+      text.remove();
+    }, 1000); // Shorter duration to match new animation time
+  }
+
+  // Create more frequent text - increased initial burst
+  for(let i = 0; i < 100; i++) { // Doubled the initial amount
+    setTimeout(createText, i * 25); // Faster creation
+  }
+
+  // Continue creating text at faster intervals
+  setInterval(() => {
+    for(let i = 0; i < 10; i++) { // More text per interval
+      setTimeout(createText, i * 25);
+    }
+  }, 50); // More frequent intervals
+}
+</script></body></html>
